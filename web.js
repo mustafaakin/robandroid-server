@@ -7,7 +7,6 @@ module.exports = function(config,db){
 
 
 	var app = express.createServer();
-	_app = app;
 
 	// Prepare express
 	app.configure(function () {
@@ -72,5 +71,7 @@ module.exports = function(config,db){
 		res.redirect("/");
 	});
 
-	return app;
+	this.app = app;
+	this.store = store;
+	return this;
 }

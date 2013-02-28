@@ -1,12 +1,19 @@
 body {
-	background-color: whiteSmoke;
+
 }
 .title > span {
 	font-weight: bold;
 	font-size: 35px;
 }
 #videoFeed {
-	border: 1px #000 solid;
+	box-shadow: 3px 3px 5px #555;
+	background-color: #DDD;
+	margin: 15px;
+}
+#controls {
+	vertical-align: top;
+	display: inline-block;
+	position: relative;
 }
 .table td {
 	vertical-align: middle;
