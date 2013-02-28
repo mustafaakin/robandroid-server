@@ -1,0 +1,17 @@
+body {
+	background-color: whiteSmoke;
+}
+.title > span {
+	font-weight: bold;
+	font-size: 35px;
+}
+#videoFeed {
+	border: 1px #000 solid;
+}
+.table td {
+	vertical-align: middle;
+}
+#graphs {
+	width: 400px;
+	height: 400px;
+}

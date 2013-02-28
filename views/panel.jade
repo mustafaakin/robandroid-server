@@ -1,0 +1,104 @@
+!!! 5
+html
+	head
+		meta(http-equiv='content-type',content='text/html;charset=iso-8859-9')
+		script(src='/js/jquery-1.8.2.min.js', lang='text/javascript')
+		script(src='/js/bootstrap.js', lang='text/javascript')
+		script(src='/js/panel.js', lang='text/javascript')
+		script(src='/js/highcharts.js', lang='text/javascript')		
+		script(src='/socket.io/socket.io.js')
+		link(rel='stylesheet', href='/css/bootstrap.css')
+		link(rel='stylesheet', href='/css/main.css')
+		title Your Panel
+	body
+		.navbar.navbar-fixed-top.navbar-inverse
+			.navbar-inner
+				.container-fluid
+					.brand INVISO - Robandroid Control Panel
+					.nav-collapse
+						ul.nav.pull-right
+							li
+								a(href="#modal-useraccount",data-toggle="modal")
+									i.icon.icon-user.icon-white
+									|  Account Details
+							li
+								a(href="/logout")
+									i.icon.icon-lock.icon-white
+									|  Logout
+		.container-fluid(style="margin-top:40px;")
+			.row-fluid
+				.span4	
+					h3 Video Feed
+					canvas#videoFeed(width=352,height=288)
+					br
+					.btn-group#videoBtns
+						.btn.btn-primary
+							i.icon.icon-white.icon-play
+							|  Start
+						.btn.btn-danger
+							i.icon.icon-white.icon-stop
+							|  Stop
+					.btn-group#movementBtns
+						.btn#left
+							i.icon.icon-arrow-left
+						.btn#up
+							i.icon.icon-arrow-up
+						.btn#down
+							i.icon.icon-arrow-down
+						.btn#right
+							i.icon.icon-arrow-right
+						.btn#stop
+							i.icon.icon-stop
+				.span3
+					h3 Adjust Your Robot's Settings
+					table.table.table-condensed
+						- var settings = [];
+						- settings.push({text:"Burglar Detection",id:"burglar"})
+						- settings.push({text:"Fire Detection",id:"fire"})
+						- settings.push({text:"Humidity Detection",id:"humidity"})
+						- settings.push({text:"Gas Leak Detection",id:"gas"})						
+						- settings.push({text:"Inform police",id:"police"})						
+						- settings.push({text:"Inform firestation",id:"firestation"})												
+						- each s in settings
+							tr
+								td #{s.text}
+								td
+									.btn-group(id="#{s.id}")
+										.setting.btn.btn-primary ON
+										.setting.btn OFF							
+				.span4
+					h3 Sensors Data over Time
+					#graphs
+					.btn-group.pull-right
+						.btn Temprature Graph
+						.btn Humidity Graph
+					hr
+					p
+						b Battery Status: 
+						.progress
+							.bar.bar-success(style="width:100%")
+.modal.hide.fade#modal-useraccount
+	.modal-header
+		button.close(data-dismiss="modal",aria-hidden="true") &times;				
+		h3 Your Account
+	.modal-body
+		form.form-horizontal
+			.control-group
+				.control-label Username
+				.controls 
+					input.input-xlarge(type="text",placeholder="musti")
+			.control-group
+				.control-label Password
+				.controls
+					input.input-xlarge(type="password")
+			.control-group
+				.control-label Email
+				.controls
+					input.input-xlarge(type="text",placeholder="john@doe.com")
+			.control-group
+				.control-label Phone Number
+				.controls
+					input.input-xlarge(type="text",placeholder="+90 123 456 78 90")
+	.modal-footer
+		.btn(data-dismiss="modal") Cancel
+		.btn.btn-primary Update Details

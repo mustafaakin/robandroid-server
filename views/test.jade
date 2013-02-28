@@ -1,0 +1,27 @@
+!!! html
+html
+  head
+    title Try this shit
+    script(src='/socket.io/socket.io.js')
+    script(src='http://code.jquery.com/jquery-latest.js')
+    script
+      $(function () {
+        var socket = io.connect();
+        socket.on('TCP', function(data){
+        var t = data.split(";");
+        if ( t[0] == "MSG"){
+          $("#msg").append(t[1] + "<br>");
+        } else if ( t[0] == "IMG"){
+          $("#resim").attr("src", "data:image/jpeg;base64," + t[1]);
+        } else {
+          $("#bar1").val(t[1]);
+        }
+        })
+      });
+  body
+    div
+      | Value: 
+      meter#bar1(max=100,style="width:400px")
+    h2 Messages
+    #msg
+    img#resim(width=320,height=240)

@@ -1,0 +1,36 @@
+!!! 5
+html
+	head
+		meta(http-equiv='content-type',content='text/html;charset=iso-8859-9')
+		script(src='/js/jquery-1.8.2.min.js', lang='text/javascript')
+		script(src='/js/bootstrap.js', lang='text/javascript')
+		script(src='/js/main.js', lang='text/javascript')
+		link(rel='stylesheet', href='/css/bootstrap.css')
+		title Robandroid Control Panel
+		style 
+			body {
+				margin: 35px;
+				background-color: whiteSmoke;
+			}		
+	body
+		.container
+			.row
+				.span3
+				.span6
+					- if ( wrongLogin)
+						.alert.alert-error You could not be logged in to the system.					
+					center
+						img(src="/img/logo.png")
+						h3 Robandroid Control Panel
+					hr
+					form(action='login', method='post')
+						fieldset	
+							.control-group
+								input.input.span6(type="text",name="user",placeholder="Your Username",tabindex="1",value="")		
+							.control-group
+								input.input.span6(type="password",name="pass",placeholder="Your Password",tabindex="1",value="")		
+								button.btn.btn-primary.pull-right(type='submit') Login to System
+							div
+								a(href='#') Forgot password
+					hr
+					h5 Inviso © 2012
