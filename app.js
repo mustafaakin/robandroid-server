@@ -23,6 +23,16 @@ if ( cluster.isMaster){
 	var sioApp = require("./socketio-app")(sub,pub);	
 	
 	// Handling Message Routing
+	// TODO: Alternative: Implement the functions there so this is only a routing mechanism
+	var messageHandler = {
+		"video-frame": [sioWeb, db],
+		"movement-command": [sioApp],
+		"robotic-command": [sioApp],
+		"settings-change": [sioWeb],
+		"sensor-data-read": [sioWeb, db]		
+	}
+
+
 	var messageHandler = {
 		"browser":{
 			"video-frame" : function(msg){
