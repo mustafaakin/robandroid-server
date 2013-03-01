@@ -37,13 +37,14 @@ module.exports = function(web,sub,pub){
 	sio.on('connection', function (socket) {
 		function handler(sess,socket){
 			console.log(sess.user + " connected from browser.");
-
+			
 			socket.on("movement", function(data){
 				console.log(data);
+				pub.publish("movement", data);
 			});
-
 			socket.on("camera", function(data){
 				console.log(data);
+				pub.publish("camera", data);
 			});
 
 			socket.on("detection", function(data){
@@ -53,7 +54,6 @@ module.exports = function(web,sub,pub){
 			socket.on("notify", function(data){
 				console.log(data);
 			});
-
 		}
 
 		// Multi-core issues

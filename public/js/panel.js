@@ -6,13 +6,11 @@ $(document).ready(function () {
     ctx.font = "bold 12px sans-serif";
     // ctx.scale(2,2);
                        
-	socket.on("robot", function(data){
-        if ( data.type == "image"){
-            var image = new Image();
-            image.src = "data:image/jpeg;base64," + data.base64;
-            image.onload = function(){
-                ctx.drawImage(image,0,0);   
-            }
+	socket.on("video", function(data){
+        var image = new Image();
+        image.src = "data:image/jpeg;base64," + data;
+        image.onload = function(){
+            ctx.drawImage(image,0,0);   
         }
     });
 
@@ -62,5 +60,4 @@ $(document).ready(function () {
             socket.emit("notify", { name: $(this).text().trim(), value:1});
         }
     });
-
 }); 	

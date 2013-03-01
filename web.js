@@ -51,15 +51,14 @@ module.exports = function(config,db){
 		}
 	});
 
-	// TODO: Bu ne ya boyle login mi olur
-	app.get("/api/v1/login/:user/:pass", function(req,res){
+	app.get("/robotlogin/:user/:pass", function(req,res){
 		var user = req.params.user;
 		var pass = req.params.pass;
 		console.log("API: " + user + " & " + pass);			
 		db.login(user,pass, function(login){
 			console.log("Login: " + login);
 			if ( login){
-				res.send("192.168.1.100",200);
+				res.send("OK",200);
 			} else {
 				res.send("NOT OK",401);
 			}
