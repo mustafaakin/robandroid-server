@@ -6,7 +6,7 @@ $(document).ready(function () {
     ctx.font = "bold 12px sans-serif";
     // ctx.scale(2,2);
                        
-	socket.on("video", function(data){
+	socket.on("video-frame", function(data){
         var image = new Image();
         image.src = "data:image/jpeg;base64," + data;
         image.onload = function(){

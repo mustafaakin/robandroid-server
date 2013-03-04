@@ -21,22 +21,29 @@ if ( cluster.isMaster){
 
 	var web  = require("./web")(config.http, db);
 	var sioWeb = require("./socketio-web")(web,sub,pub);	
-	var sioRobot = require("./socketio-robot")(config.robot, db, sub,pub);	
-	
+	// var sioRobot = require("./socketio-robot")(config.robot, db, sub,pub);	
+	var videoServer = require("./video-server")(config.videoserver, sub, pub);
+
+
 	// Handling Message Routing
 	// TODO: Alternative: Implement the functions there so this is only a routing mechanism
 	var messageHandler = {
-		"video-frame": [sioWeb, db],
-		"movement-command": [sioRobot],
-		"robotic-command": [sioRobot],
+		"video-frame": [sioWeb],
+//		"movement-command": [sioRobot],
+//		"robotic-command": [sioRobot],
 		"settings-change": [sioWeb],
 		"sensor-data-read": [sioWeb, db]		
 	}
 
 	sub.on("message", function(channel, message){
-		var directions = messageHandler[channel];
+		var t = channel.split(":");
+		var username = t[0];
+		var direction = t[1];
+		console.log(channel);
+		
+		var directions = messageHandler[direction];
 		for ( var i in directions){
-			directions[i].notify(message);
+			directions[i].notify(username, direction, message);
 		}
 	});
 

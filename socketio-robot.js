@@ -6,6 +6,7 @@
 	
 	sio.sockets.on('connection', function (socket) {
 		var auth = false;
+		var username = null;
 
 		socket.on("login", function(data){		
 			if ( data.username && data.password){
@@ -13,6 +14,7 @@
 					if ( login){					
 						console.log(data.username + " logged in from Android");
 						auth = true;
+						username = data.username;
 					}
 				});
 			}
@@ -20,9 +22,14 @@
 
 		socket.on("sensor", function(data){
 			if ( auth){
-				
+			
 			}
-		})
+		});
+
+		socket.on("video-frame", function(data){
+			pub.publish(username + ":video-frame", data);
+		});
+
 	});
 
 

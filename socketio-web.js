@@ -34,8 +34,13 @@ module.exports = function(web,sub,pub){
 	
 	sio.set("log level", 1);
 
+	var IOSockets = [];
+
 	sio.on('connection', function (socket) {
 		function handler(sess,socket){
+			IOSockets[sess.user] = socket;
+			sub.subscribe(sess.user + ":video-frame");
+
 			console.log(sess.user + " connected from browser.");
 			
 			socket.on("movement", function(data){
@@ -66,4 +71,11 @@ module.exports = function(web,sub,pub){
 			handler(sess,socket);
 		}
 	});
+
+	this.notify = function(username, direction, message){
+		console.log("Notification for: " + username + ", " + direction);
+		IOSockets[username].emit(direction, message);
+	}
+
+	return this;
 }	
