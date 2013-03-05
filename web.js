@@ -1,4 +1,6 @@
-module.exports = function(config,db){
+var _app, _store;
+
+module.exports.setup = function(config,db){
 	var express = require('express');
 	var connect = require('express/node_modules/connect');
 	var parseCookie = connect.utils.parseCookie;
@@ -23,6 +25,9 @@ module.exports = function(config,db){
 	    , store: store
 	  }));
 	});
+
+	_app = app;
+	_store = store;
 
 	app.listen(config.port);
 
@@ -70,7 +75,9 @@ module.exports = function(config,db){
 		res.redirect("/");
 	});
 
-	this.app = app;
-	this.store = store;
-	return this;
+	module.exports.app = app;
+	module.exports.store
 }
+
+module.exports.getApp = function(){ return _app};
+module.exports.getStore = function(){ return _store};

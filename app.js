@@ -16,31 +16,31 @@ if ( cluster.isMaster){
 	var pub = redis.createClient();
 	var sub = redis.createClient();
 
+	var db = require("./db");
+	var web  = require("./web");
+	var sioWeb = require("./socketio-web");
+	var videoServer = require("./video-server");
+	var dataServer = require("./data-server");
 
-	var db = require("./db")(config.mysql);
-
-	var web  = require("./web")(config.http, db);
-	var sioWeb = require("./socketio-web")(web,sub,pub);	
-	// var sioRobot = require("./socketio-robot")(config.robot, db, sub,pub);	
-	var videoServer = require("./video-server")(config.videoserver, sub, pub);
-
+	// Needs to be done in this order
+	db.setup(config.mysql);
+	web.setup(config.http, db);
+	sioWeb.setup(web.getApp(), web.getStore() ,sub,pub);	
+	videoServer.setup(config.videoserver,db, sub, pub);
+	dataServer.setup(config.dataserver,db, sub, pub);
 
 	// Handling Message Routing
-	// TODO: Alternative: Implement the functions there so this is only a routing mechanism
 	var messageHandler = {
 		"video-frame": [sioWeb],
-//		"movement-command": [sioRobot],
-//		"robotic-command": [sioRobot],
+		"movement-command": [dataServer],
 		"settings-change": [sioWeb],
 		"sensor-data-read": [sioWeb, db]		
-	}
+	};
 
 	sub.on("message", function(channel, message){
 		var t = channel.split(":");
 		var username = t[0];
 		var direction = t[1];
-		console.log(channel);
-		
 		var directions = messageHandler[direction];
 		for ( var i in directions){
 			directions[i].notify(username, direction, message);

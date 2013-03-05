@@ -1,6 +1,9 @@
-module.exports = function(web,sub,pub){
+var sub, pub;
+var IOSockets;
+
+module.exports.setup = function(app, store, _sub,_pub){
 	var io = require("socket.io");
-	var sio = io.listen(web.app);
+	var sio = io.listen(app);
 	var redis = require("redis");
 	var connect = require('express/node_modules/connect');
 	var parseCookie = connect.utils.parseCookie;
@@ -8,7 +11,10 @@ module.exports = function(web,sub,pub){
 
 	var RedisStore = require('socket.io/lib/stores/redis')	
 	var RedisStoreExpress = require('connect-redis')(express);
-	var store = web.store;
+
+	sub = _sub;
+	pub = _pub;
+	IOSockets = [];
 
 	sio.set('store', 
 		new RedisStore({
@@ -34,19 +40,16 @@ module.exports = function(web,sub,pub){
 	
 	sio.set("log level", 1);
 
-	var IOSockets = [];
-
 	sio.on('connection', function (socket) {
 		function handler(sess,socket){
 			IOSockets[sess.user] = socket;
 			sub.subscribe(sess.user + ":video-frame");
-
-			console.log(sess.user + " connected from browser.");
 			
 			socket.on("movement", function(data){
 				console.log(data);
-				pub.publish("movement", data);
+				pub.publish(sess.user + ":movement-command", data);
 			});
+
 			socket.on("camera", function(data){
 				console.log(data);
 				pub.publish("camera", data);
@@ -71,11 +74,10 @@ module.exports = function(web,sub,pub){
 			handler(sess,socket);
 		}
 	});
+};
 
-	this.notify = function(username, direction, message){
-		console.log("Notification for: " + username + ", " + direction);
-		IOSockets[username].emit(direction, message);
-	}
+module.exports.notify = function(username, direction, message){
+	IOSockets[username].emit(direction, message);
+}
 
-	return this;
-}	
+module.exports.toString = function(){ return "socket-io web"};

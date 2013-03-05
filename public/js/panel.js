@@ -28,7 +28,7 @@ $(document).ready(function () {
         } else if ( code == 40){
         	s = "down";
         } else if ( code == 83){
-        s = "stop";
+            s = "stop";
         }
 	});
 
