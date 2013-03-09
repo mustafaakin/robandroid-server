@@ -20,15 +20,15 @@ $(document).ready(function () {
         var code = (e.keyCode ? e.keyCode : e.which);
         var s = "";
         if(code == 37) { //Enter keycode
-        	s = "left";
+            socket.emit("movement", "left");
         } else if ( code == 38){
-        	s = "up";
+            socket.emit("movement", "up");
         } else if ( code == 39){
-        	s = "right";
+        	socket.emit("movement", "right");
         } else if ( code == 40){
-        	s = "down";
+            socket.emit("movement", "down");
         } else if ( code == 83){
-            s = "stop";
+            socket.emit("movement", "stop");
         }
 	});
 

@@ -2,7 +2,6 @@ var socks = [];
 
 module.exports.setup = function(config, db, sub, pub){
 	var net     = require('net');
-	var carrier = require('carrier');
 
 	var server = net.createServer(function(sock) {
 		console.log("New Data TCP client");
