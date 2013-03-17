@@ -33,6 +33,7 @@ if ( cluster.isMaster){
 	var messageHandler = {
 		"video-frame": [sioWeb],
 		"movement-command": [dataServer],
+		"camera-command": [dataServer],
 		"settings-change": [sioWeb],
 		"sensor-data-read": [sioWeb, db]		
 	};

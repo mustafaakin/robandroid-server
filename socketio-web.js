@@ -46,21 +46,19 @@ module.exports.setup = function(app, store, _sub,_pub){
 			sub.subscribe(sess.user + ":video-frame");
 			
 			socket.on("movement", function(data){
-				console.log(data);
 				pub.publish(sess.user + ":movement-command", data);
 			});
 
 			socket.on("camera", function(data){
-				console.log(data);
-				pub.publish("camera", data);
+				pub.publish(sess.user + ":camera-command", data);
 			});
 
 			socket.on("detection", function(data){
-				console.log(data);
+
 			});
 
 			socket.on("notify", function(data){
-				console.log(data);
+
 			});
 		}
 
