@@ -32,6 +32,9 @@ $(document).ready(function () {
         }
 	});
 
+	 $("#movementBtns > .btn").on("touchstart", function(){
+	 	$(this).trigger("click");
+	 });
 
     $("#movementBtns > .btn").click(function(){
         socket.emit("movement", $(this).data("cmd"));

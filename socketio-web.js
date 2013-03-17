@@ -46,6 +46,7 @@ module.exports.setup = function(app, store, _sub,_pub){
 			sub.subscribe(sess.user + ":video-frame");
 			
 			socket.on("movement", function(data){
+				console.log(data);
 				pub.publish(sess.user + ":movement-command", data);
 			});
 

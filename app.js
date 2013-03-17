@@ -39,6 +39,7 @@ if ( cluster.isMaster){
 	};
 
 	sub.on("message", function(channel, message){
+
 		var t = channel.split(":");
 		var username = t[0];
 		var direction = t[1];
