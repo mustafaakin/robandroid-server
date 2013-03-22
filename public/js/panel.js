@@ -14,6 +14,16 @@ $(document).ready(function () {
         }
     });
 
+    socket.on("test-sensor1", function(data){
+        c1.append(new Date().getTime(), data);
+        $("#tempVal").text(data);
+    });
+
+    socket.on("test-sensor2", function(data){
+        c2.append(new Date().getTime(), data);
+        $("#humVal").text(data);
+    });
+
 
 
 	$("body").keydown(function(e){
@@ -63,4 +73,22 @@ $(document).ready(function () {
             socket.emit("notify", { name: $(this).text().trim(), value:1});
         }
     });
+
+   var c1 = new TimeSeries();
+   var c2 = new TimeSeries();
+  
+      
+
+    var chart1 = new SmoothieChart({
+         grid: { strokeStyle:'rgb(125, 0, 0)',
+          lineWidth: 1, verticalSections: 12, }
+    });
+    chart1.addTimeSeries(c1, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart1.streamTo(document.getElementById("chart"), 1000);
+
+    var chart2 = new SmoothieChart();
+    chart2.addTimeSeries(c2, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+    chart2.streamTo(document.getElementById("chart2"), 1000);
+
+
 }); 	

@@ -44,7 +44,11 @@ module.exports.setup = function(app, store, _sub,_pub){
 		function handler(sess,socket){
 			IOSockets[sess.user] = socket;
 			sub.subscribe(sess.user + ":video-frame");
-			
+			setInterval(function(){
+				socket.emit("test-sensor1", Math.random() * 2 + 30);
+				socket.emit("test-sensor2", Math.ceil(Math.random() * 100 + 5000));
+			},1000);
+
 			socket.on("movement", function(data){
 				console.log(data);
 				pub.publish(sess.user + ":movement-command", data);
