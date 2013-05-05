@@ -1,2 +1,3 @@
-CREATE USER 'robandroid'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON robandroid.* TO 'robandroid'@'localhost';
+CREATE DATABASE robandroid;
+CREATE USER 'robby'@'localhost' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON robandroid.* TO 'robby'@'localhost';
