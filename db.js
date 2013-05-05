@@ -28,3 +28,32 @@ module.exports.addSensorData = function(username,type,value,occured,cb){
 		}
 	});
 }
+
+module.exports.getTemperature = function(username, cb){
+	conn.query("SELECT AVG(value) as avgTemp, MIN(value) as minTemp, MAX(value) as maxTemp FROM sensors WHERE username = ? AND type = 1 AND stamp >= DATE_SUB(NOW(), INTERVAL 1 day)", 
+		[username], function(err,rows,fields){
+			if ( !err && rows.length > 0){
+				cb(rows[0]);
+			} else {
+				var data = {avgTemp: 0,minTemp: 0,maxTemp: 0};
+				cb(data);
+			}
+	});
+}
+
+module.exports.setSetting = function(username, type, value){
+	// TODO: Fix SQL injection
+	conn.query("UPDATE users SET " + type + " = ?  WHERE username = ?",
+		[value, username], function(err,rows,fields){
+			if ( err){
+				throw err;
+			} 
+	});
+}
+
+module.exports.getUserSettings = function(username, cb){
+	conn.query("SELECT * FROM users WHERE username = ?", 
+		[username],function(err,rows,fields){
+			cb(rows[0]);
+	});
+}

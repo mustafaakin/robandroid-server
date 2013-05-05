@@ -1,7 +1,7 @@
 var sub, pub;
 var IOSockets;
 
-module.exports.setup = function(app, store, _sub,_pub){
+module.exports.setup = function(app, store, db, _sub,_pub){
 	var io = require("socket.io");
 	var sio = io.listen(app);
 	var redis = require("redis");
@@ -44,13 +44,8 @@ module.exports.setup = function(app, store, _sub,_pub){
 		function handler(sess,socket){
 			IOSockets[sess.user] = socket;
 			sub.subscribe(sess.user + ":video-frame");
-			setInterval(function(){
-				socket.emit("test-sensor1", Math.random() * 2 + 30);
-				socket.emit("test-sensor2", Math.ceil(Math.random() * 100 + 5000));
-			},1000);
 
 			socket.on("movement", function(data){
-				console.log(data);
 				pub.publish(sess.user + ":movement-command", data);
 			});
 
@@ -59,11 +54,13 @@ module.exports.setup = function(app, store, _sub,_pub){
 			});
 
 			socket.on("detection", function(data){
-
+				var t = {"Burglar":"isBurglar", "Gas Leak":"isGasLeak", "Fire":"isFire"};
+				db.setSetting(sess.user, t[data.name], data.value);
 			});
 
 			socket.on("notify", function(data){
-
+				var t = {"Police":"isPolice", "Firestation":"isFirestation", "SMS":"isSMS", "E-Mail": "isEmail"};
+				db.setSetting(sess.user, t[data.name], data.value);
 			});
 		}
 

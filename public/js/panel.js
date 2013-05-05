@@ -1,6 +1,8 @@
 $(document).ready(function () {
 	var socket = io.connect();
 
+    var video = document.querySelector('video');
+
     var canvas = document.getElementById("videoFeed");
     var ctx = canvas.getContext("2d");
     ctx.font = "bold 12px sans-serif";
@@ -10,21 +12,19 @@ $(document).ready(function () {
         var image = new Image();
         image.src = "data:image/jpeg;base64," + data;
         image.onload = function(){
-            ctx.drawImage(image,0,0);   
+            ctx.drawImage(image,0,0); 
+            // BGR to RGB
+            var imgData = ctx.getImageData(0, 0, 640, 480);  
+            var pix = imgData.data;
+            for (var i = 0, n = pix.length; i < n; i += 4) {
+                var r = pix[i];
+                pix[i  ] = pix[i + 2]; // red
+                pix[i+2] = r; // blue
+                // i+3 is alpha (the fourth element)
+            }
+            ctx.putImageData(imgData, 0, 0);
         }
     });
-
-    socket.on("test-sensor1", function(data){
-        c1.append(new Date().getTime(), data);
-        $("#tempVal").text(data);
-    });
-
-    socket.on("test-sensor2", function(data){
-        c2.append(new Date().getTime(), data);
-        $("#humVal").text(data);
-    });
-
-
 
 	$("body").keydown(function(e){
         var code = (e.keyCode ? e.keyCode : e.which);
@@ -72,23 +72,42 @@ $(document).ready(function () {
             $(this).addClass("btn-success").removeClass("btn-danger").children().removeClass("icon-remove").addClass("icon-ok");
             socket.emit("notify", { name: $(this).text().trim(), value:1});
         }
-    });
+    });     
 
-   var c1 = new TimeSeries();
-   var c2 = new TimeSeries();
-  
-      
 
-    var chart1 = new SmoothieChart({
-         grid: { strokeStyle:'rgb(125, 0, 0)',
-          lineWidth: 1, verticalSections: 12, }
-    });
-    chart1.addTimeSeries(c1, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
-    chart1.streamTo(document.getElementById("chart"), 1000);
+    ///////// STATUS DASHBOARD //////////
+    var tempBoundaries = [30,35];    
+    function findDangerLevel(temp){
+        if ( temp < tempBoundaries[0]){
+            return 'label label-success';
+        } else if ( temp < tempBoundaries[1]){
+            return 'label label-warning';
+        } else {
+            return 'label label-important';
+        }
+    }
 
-    var chart2 = new SmoothieChart();
-    chart2.addTimeSeries(c2, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
-    chart2.streamTo(document.getElementById("chart2"), 1000);
+    function lastUpdate(){
+        var d = new Date();        
+        $("#lastUpdate").text(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+    }
 
+    function tidyNum(num){
+        return parseFloat(Math.round(num * 100) / 100).toFixed(2);
+    }
+
+    function avgTempTask(){
+        $.get("/temperature", function(data){                
+            var html = "";
+            html += "<div class='" + findDangerLevel(data.avgTemp) + "'> AVG: " + tidyNum(data.avgTemp) + "</a></div>&nbsp;";
+            html += "<div class='" + findDangerLevel(data.minTemp) + "'> MIN: " + tidyNum(data.minTemp) + "</a></div>&nbsp;";
+            html += "<div class='" + findDangerLevel(data.maxTemp) + "'> MAX: " + tidyNum(data.maxTemp) + "</a></div>&nbsp;";
+            $("#avgTemp").html(html);
+            lastUpdate();
+        });
+    } 
+    
+    avgTempTask();
+    setInterval(avgTempTask, 60*1000);
 
 }); 	

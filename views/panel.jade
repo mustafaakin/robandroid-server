@@ -1,9 +1,18 @@
 !!! 5
+mixin settingsButton(value, name)
+	- if ( value == "1")
+			.btn.btn-success
+				i.icon.icon-white.icon-ok
+				|  #{name}
+	- else
+			.btn.btn-danger
+				i.icon.icon-white.icon-remove
+				|  #{name}			
+
 html
 	head
 		meta(http-equiv='content-type',content='text/html;charset=iso-8859-9')
 		script(src='/js/jquery-1.8.2.min.js', lang='text/javascript')
-		script(src='/js/smoothie.js', lang='text/javascript')		
 		script(src='/js/bootstrap.js', lang='text/javascript')
 		script(src='/js/panel.js', lang='text/javascript')
 		script(src='/socket.io/socket.io.js')
@@ -11,25 +20,12 @@ html
 		link(rel='stylesheet', href='/css/main.css')
 		meta(name="viewport",content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")		
 		title Your Panel
-	body
-		.navbar.navbar-fixed-top
-			.navbar-inner
-				.container-fluid
-					.brand Robandroid Control Panel
-					ul.nav.pull-right
-						li
-							a(href="#modal-useraccount",data-toggle="modal")
-								i.icon.icon-user.icon-white
-								|  Account Details
-						li
-							a(href="/logout")
-								i.icon.icon-lock.icon-white
-								|  Logout
-		.container-fluid(style="margin-top:50px")
+	body(style="background-color: #fff")
+		.container-fluid
 			.row-fluid
 				.span6
 					canvas.pull-right#videoFeed(width=640,height=480)
-				.span4
+				.span6							
 					h4 Movement Controls
 					.btn-toolbar
 						.btn-group#movementBtns
@@ -43,6 +39,7 @@ html
 								i.icon.icon-white.icon-arrow-right
 							.btn.btn-large.btn-inverse(data-cmd="stop")
 								i.icon.icon-white.icon-stop
+				.span6
 					h4 Camera Controls
 					.btn-toolbar
 						.btn-group#cameraBtns
@@ -56,52 +53,41 @@ html
 								i.icon.icon-white.icon-arrow-left
 							.btn.btn-large.btn-info(data-cmd="right")
 								i.icon.icon-white.icon-arrow-right
+				.span6
 					h4 Detection Preferences
 					.btn-group#detectionBtns
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  Burglar
-						.btn.btn-success 
-							i.icon.icon-white.icon-ok
-							|  Fire
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  Gas Leak
+						mixin settingsButton(values.isBurglar, "Burglar")
+						mixin settingsButton(values.isFire, "Fire")
+						mixin settingsButton(values.isGasLeak, "Gas Leak")
 					h4 Notification Preferences
 					.btn-group#notifyBtns
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  Police
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  Firestation
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  SMS
-						.btn.btn-success
-							i.icon.icon-white.icon-ok
-							|  E-Mail
-				.span4
-					h3 Status
-					dl
-						dt Battery
-						dd 5 hr 2 min remaining
-							.progress
-								.bar(style="width: 50%")
-						dt Temprature
-						dd 33 C, 28 C min, 39 max (last 24 hours)
-						dt Gas Levels
-						dd 34 birim
-					.row-fluid
-						.span6
-							h6 Temprature 
-								span#tempVal
-							canvas#chart(width="200px")
-						.span6
-							h6 Humidity 
-								span#humVal
-							canvas#chart2(width="200px")
-
+						mixin settingsButton(values.isPolice, "Police")
+						mixin settingsButton(values.isFirestation, "Firestation")
+						mixin settingsButton(values.isSMS, "SMS")
+						mixin settingsButton(values.isEmail, "E-Mail")
+				.span6
+					#status
+						h3 Status
+						dl.dl-horizontal
+							dt Last Update:
+							dd#lastUpdate Never
+							dt Battery:
+							dd#battery &nbsp;
+							br
+							dt Current Temperature:
+							dd#currentTemp &nbsp;
+							dt Temperature (24hr):
+							dd#avgTemp &nbsp;
+							br 
+							dt Gas Levels:
+							dd#gas &nbsp;
+							dt Incidents (24 hr):
+							dd &nbsp;
+							br
+							dt Driving Mode:
+							dd#drivingMode &nbsp;
+							dt Hardware:
+							dd#hardware Not connected
 .modal.hide.fade#modal-useraccount
 	.modal-header
 		button.close(data-dismiss="modal",aria-hidden="true") &times;				

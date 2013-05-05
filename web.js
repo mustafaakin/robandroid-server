@@ -50,7 +50,9 @@ module.exports.setup = function(config,db){
 
 	app.get("/panel", function(req,res){
 		if ( req.session.user){
-			res.render("panel");
+			db.getUserSettings(req.session.user, function(data){
+				res.render("panel",{values:data});
+			});
 		} else {
 			res.redirect("/?nak");
 		}
@@ -75,8 +77,15 @@ module.exports.setup = function(config,db){
 		res.redirect("/");
 	});
 
-	module.exports.app = app;
-	module.exports.store
+	app.get("/temperature", function(req,res){
+		if ( req.session.user){
+			db.getTemperature(req.session.user, function(data){
+				res.send(data);
+			});
+		} else {
+			res.redirect("/nak");
+		}
+	});
 }
 
 module.exports.getApp = function(){ return _app};

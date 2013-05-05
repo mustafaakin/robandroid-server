@@ -10,7 +10,6 @@ if ( cluster.isMaster){
 	}
 	cluster.on("death", function(worker){
   		console.log("worker " + worker.pid + " died");		
-// 		var worker = cluster.fork();  		
 	});
 } else {
 	var pub = redis.createClient();
@@ -25,7 +24,7 @@ if ( cluster.isMaster){
 	// Needs to be done in this order
 	db.setup(config.mysql);
 	web.setup(config.http, db);
-	sioWeb.setup(web.getApp(), web.getStore() ,sub,pub);	
+	sioWeb.setup(web.getApp(), web.getStore(), db, sub,pub);	
 	videoServer.setup(config.videoserver,db, sub, pub);
 	dataServer.setup(config.dataserver,db, sub, pub);
 
@@ -34,12 +33,11 @@ if ( cluster.isMaster){
 		"video-frame": [sioWeb],
 		"movement-command": [dataServer],
 		"camera-command": [dataServer],
-		"settings-change": [sioWeb],
-		"sensor-data-read": [sioWeb, db]		
+		"sensor-data-read": [sioWeb, db],
+		"webcam": [videoServer]	
 	};
 
 	sub.on("message", function(channel, message){
-
 		var t = channel.split(":");
 		var username = t[0];
 		var direction = t[1];

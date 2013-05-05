@@ -5,6 +5,7 @@ module.exports.setup = function(config, db, sub, pub){
 	var server = net.createServer(function(sock) {
 		console.log("New Video TCP client");
 		var chunks = [];
+
 		sock.on("data", function(data){
 			chunks.push(data);
 			if ( data[data.length - 1] == 0){
@@ -17,4 +18,8 @@ module.exports.setup = function(config, db, sub, pub){
 	server.listen(5000);  
 }
 
+module.exports.notify = function(username, direction, message){
+
+
+}
 module.exports.toString = function(){ return "video server"};
